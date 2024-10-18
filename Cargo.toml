@@ -5,3 +5,5 @@ edition = "2021"
 
 [dependencies]
 diesel = { version = "2.2.4", features = ["postgres"] }
+dotenvy = "0.15.7"
+dioxus = { version = "0.5.6", features = ["web"]}
