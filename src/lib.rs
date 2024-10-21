@@ -13,7 +13,8 @@ pub fn establish_connection() -> PgConnection {
 }
 use models::{NewAnimal, Animal};
 
-pub fn create_animal(conn: &mut PgConnection, name: String, species: Option<String>, microchip: Option<i32>) -> Animal {
+pub fn create_animal(name: String, species: Option<String>, microchip: Option<i32>) -> Animal {
+    let conn = &mut establish_connection();
     use crate::schema::animal;
     let new_animal = NewAnimal { name, species, microchip };
 

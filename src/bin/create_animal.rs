@@ -2,8 +2,6 @@ use toebeans::*;
 use std::io::{stdin};
 
 fn main() {
-    let connection = &mut establish_connection();
-
     let mut name = String::new();
     let mut species = String::new();
     let mut microchip = String::new();
@@ -26,7 +24,7 @@ fn main() {
         }
     };
 
-    let animal = create_animal(connection, name.clone(), Some(species.clone()), microchip.clone());
+    let animal = create_animal(name.clone(), Some(species.clone()), microchip.clone());
     let mut microchip_string = String::new();
     if microchip.is_some() {
         microchip_string += format!(" with microchip {:?}", microchip.unwrap()).as_str();
