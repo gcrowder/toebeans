@@ -7,8 +7,8 @@ use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
 
 use diesel::prelude::*;
-use toebeans::{create_animal, establish_connection};
-use toebeans::models::Animal;
+use toebeans::establish_connection;
+use toebeans::models::{Animal, NewAnimal};
 use toebeans::schema::animal::dsl::animal as animal_schema;
 #[tokio::main]
 async fn main() {
@@ -21,7 +21,7 @@ async fn main() {
         .route("/", get(root))
         // `POST /users` goes to `create_user`
         .route("/users", post(create_user))
-        .route("/animals", get(list_animals))
+        .route("/animals", get(list_animals).post(create_animal))
         .route("/animals/:animal_id", get(get_animal));
 
     // run our app with hyper, listening globally on port 3000
@@ -68,6 +68,16 @@ async fn get_animal(Path(animal_id): Path<i32>) -> Result<impl IntoResponse, Sta
     }
     // Ok(Json(animal))
     // (StatusCode::OK, Json(animals))
+}
+#[axum::debug_handler]
+async fn create_animal(Json(payload): Json<NewAnimal>) -> Result<impl IntoResponse, StatusCode> {
+    if payload.name.is_empty(){
+        return Err(StatusCode::BAD_REQUEST);
+    }
+    match Animal::create(payload).await {
+        Ok(animal) => Ok(Json(animal)),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
 }
 
 // the input to our `create_user` handler
